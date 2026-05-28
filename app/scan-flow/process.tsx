@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Alert } from 'react-native';
-import { Colors, Typography } from '../../constants/theme';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FileText } from 'lucide-react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useRef } from 'react';
+import { Alert, Animated, StyleSheet, Text, View } from 'react-native';
+import { Colors, Typography } from '../../constants/theme';
 import { api } from '../../services/api';
 
 export default function ProcessScreen() {
@@ -28,13 +28,34 @@ export default function ProcessScreen() {
     ).start();
 
     // Make the real backend API call to process scanning & AI extraction
+    const getMockReportText = (template?: string, name?: string) => {
+      switch (template) {
+        case 'sugar':
+          return `Doctor's Diagnosis: Patient shows fasting glucose 110 mg/dL and HbA1c 5.8%. Recommend dietary changes and repeat testing in 3 months.\nReport: ${name}`;
+        case 'thyroid':
+          return `Clinical Notes: TSH 2.3 uIU/mL, Free T4 normal. No overt hypothyroidism.\nReport: ${name}`;
+        case 'lipid':
+          return `Impression: Total cholesterol 210 mg/dL, LDL borderline high at 135 mg/dL. Lifestyle modification advised.\nReport: ${name}`;
+        case 'xray':
+          return `Impression: Chest X-Ray shows clear lung fields with no consolidation or effusion. Cardiomediastinal silhouette within normal limits.\nReport: ${name}`;
+        case 'bp':
+          return `Observation: Blood Pressure recorded as 145/92 mmHg. Recommend antihypertensive evaluation.\nReport: ${name}`;
+        case 'cbc':
+        default:
+          return `Doctor's Diagnosis: Haemoglobin 13.8 g/dL, WBC 6800 /cmm, Platelets 230000 /cmm. No significant abnormalities noted.\nReport: ${name}`;
+      }
+    };
+
     const processScannedReport = async () => {
       try {
         console.log(`[ProcessScreen] Sending report "${name}" (template: ${template}) to backend AI engine...`);
         
+        const mockText = getMockReportText(template as string, name as string);
+
         const newRecord = await api.createRecord({
           reportName: name || 'Scanned Medical Report',
           templateId: template || 'cbc',
+          reportText: mockText,
         });
 
         console.log('[ProcessScreen] AI processing complete. Navigating to results page.');

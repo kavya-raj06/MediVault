@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
 import { Colors, Typography } from '../../constants/theme';
 import { Button } from '../../components/Button';
 import { useRouter } from 'expo-router';
@@ -42,6 +43,21 @@ export default function CaptureScreen() {
         params: { template: selectedTemplate }
       });
     }, 500);
+  };
+
+  const handleGalleryPick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      router.push({
+        pathname: '/scan-flow/name',
+        params: { template: selectedTemplate }
+      });
+    }
   };
 
   return (
@@ -92,7 +108,7 @@ export default function CaptureScreen() {
         </ScrollView>
 
         <View style={styles.controls}>
-          <TouchableOpacity style={styles.galleryButton}>
+          <TouchableOpacity style={styles.galleryButton} onPress={handleGalleryPick}>
             <ImageIcon size={24} color={Colors.surface} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>

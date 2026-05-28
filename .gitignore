@@ -32,6 +32,17 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
+
+# server
+server/.env
+server/node_modules/
+
+# VS Code
+.vscode/
+
+# Expo shared
+.expo-shared/
 
 # typescript
 *.tsbuildinfo

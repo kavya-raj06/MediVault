@@ -1,18 +1,18 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
+
 import authRoutes from './routes/auth';
 import profileRoutes from './routes/profile';
 import recordRoutes from './routes/records';
 import vitalsRoutes from './routes/vitals';
 import timelineRoutes from './routes/timeline';
 import emergencyRoutes from './routes/emergency';
-
-// Load environment variables
-dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5001;
 
 // Global Middleware
 app.use(cors());
@@ -49,6 +49,6 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 MediVault Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 MediVault Server running on port ${PORT} (accessible via localhost and network IP)`);
 });
