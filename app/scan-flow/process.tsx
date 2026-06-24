@@ -1,13 +1,9 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { FileText } from 'lucide-react-native';
-<<<<<<< HEAD
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import * as FileSystem from 'expo-file-system/legacy';
-=======
 import React, { useEffect, useRef } from 'react';
 import { Alert, Animated, StyleSheet, Text, View } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import * as FileSystem from 'expo-file-system/legacy';
+import { FileText } from 'lucide-react-native';
 import { Colors, Typography } from '../../constants/theme';
->>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
 import { api } from '../../services/api';
 
 export default function ProcessScreen() {
@@ -78,19 +74,13 @@ export default function ProcessScreen() {
 
         console.log(`[ProcessScreen] Sending report "${name}" with captured image base64 data to backend AI engine...`);
         
-        const mockText = getMockReportText(template as string, name as string);
-
         const newRecord = await api.createRecord({
           reportName: name || 'Scanned Medical Report',
           templateId: template || 'cbc',
-<<<<<<< HEAD
           reportText: reportText || '',
           imageBase64: capturedImageBase64 || '',
           customFileUri: capturedImageUri || '',
           files: filesData,
-=======
-          reportText: mockText,
->>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
         });
 
         console.log('[ProcessScreen] AI processing complete. Navigating to results page.');
