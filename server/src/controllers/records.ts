@@ -11,7 +11,7 @@ if (geminiApiKey) {
   genAI = new GoogleGenerativeAI(geminiApiKey);
   console.log('[MediVault Backend] Google Gemini AI Client initialized successfully for rebase build.');
 } else {
-  console.warn('[MediVault Backend] WARNING: GEMINI_API_KEY environment variable is not defined. Using mock fallback simulation.');
+  console.warn('[MediVault Backend] WARNING: GEMINI_API_KEY environment variable is not defined');
 }
 
 export const listRecords = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -155,13 +155,11 @@ interface MedicalReportAnalysis {
 }`;
 
         const modelsToTry = [
-          'gemini-2.0-flash',
-          'gemini-2.0-flash-exp',
-          'gemini-1.5-flash',
-          'gemini-1.5-flash-latest',
-          'gemini-2.5-flash',
-          'gemini-1.5-pro',
-          'gemini-pro'
+          "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-2.5-flash-lite",
+  "gemini-2.0-flash-lite",
+  "gemini-flash-latest"
         ];
 
         let result: any = null;
