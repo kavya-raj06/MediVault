@@ -8,6 +8,7 @@ export const useStore = create<AppState>((set, get) => ({
   profile: null,
   records: [],
   timeline: [],
+  theme: 'light',
 
   // Set offline status
   setOffline: (status) => set({ isOffline: status }),
@@ -72,6 +73,9 @@ export const useStore = create<AppState>((set, get) => ({
         aiSummary: rec.aiSummary,
         doctorNotes: rec.doctorNotes,
         extractedValues: rec.extractedValues || [],
+        fileUri: rec.fileUri || null,
+        syncUpdates: rec.syncUpdates || null,
+        nameMismatch: rec.nameMismatch || false,
       }));
 
       // 3. Fetch chronological timeline
@@ -189,6 +193,9 @@ export const useStore = create<AppState>((set, get) => ({
         aiSummary: updatedRec.aiSummary,
         doctorNotes: updatedRec.doctorNotes,
         extractedValues: updatedRec.extractedValues || [],
+        fileUri: updatedRec.fileUri || null,
+        syncUpdates: updatedRec.syncUpdates || null,
+        nameMismatch: updatedRec.nameMismatch || false,
       };
 
       set((state) => {
@@ -212,8 +219,27 @@ export const useStore = create<AppState>((set, get) => ({
     }
   },
 
+  confirmRecord: async (id) => {
+    try {
+      console.log(`[MediVault Store] Confirming and synchronizing record ${id}...`);
+      await api.confirmRecord(id);
+      
+      // Reload initial data to fetch the updated profile parameters and logged vitals
+      await get().loadInitialData();
+      console.log(`[MediVault Store] Record ${id} fully confirmed and store reloaded.`);
+    } catch (error) {
+      console.error(`[MediVault Store] Failed to confirm record ${id}:`, error);
+      throw error;
+    }
+  },
+
   // Adds a timeline event locally
   addTimelineEvent: (event) => set((state) => ({
     timeline: [event, ...state.timeline],
+  })),
+
+  // Toggle dynamic theme state
+  toggleTheme: () => set((state) => ({
+    theme: state.theme === 'light' ? 'dark' : 'light'
   })),
 }));

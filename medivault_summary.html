@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MediVault: AI powered reports scanner and personal Health locker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background-color: #ffffff;
+            line-height: 1.6;
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        h1, h2, h3 {
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 32px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 36px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 8px;
+        }
+
+        p, li {
+            font-size: 14px;
+            color: #334155;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .highlight-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #e42278;
+            padding: 16px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+
+        .box-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .box-desc {
+            font-size: 13px;
+            color: #475569;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .footer {
+            margin-top: 60px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>MediVault: AI powered reports scanner and personal Health locker</h1>
+    <p>An intelligent, secure personal health information system combining an advanced mobile frontend with real-time Generative AI medical document parsing and automated vital telemetry tracking.</p>
+
+    <h2>1. Brief Overview</h2>
+    <p>MediVault is designed to solve the problem of fragmented and complex clinical documentation. It provides a personal medical locker that allows patients to snap photos of physical clinical documents and immediately parse them into structured, trackable health profiles in real time. It serves as a unified baseline for critical medical metrics, chronic diagnoses, and consulting references.</p>
+
+    <h2>2. Core Features</h2>
+    <ul>
+        <li><strong>Real-Time Multimodal Camera Scanner:</strong> Captures high-fidelity photos of medical reports directly inside the app, uploading compressed base64 images securely to the backend.</li>
+        <li><strong>Multimodal Visual OCR Engine:</strong> Feeds photo assets directly to Google Gemini 2.0 Flash to perform deep document text extraction, completely bypassing the need for native offline OCR libraries.</li>
+        <li><strong>AI Clinical Summaries:</strong> Generates automated, patient-friendly, easy-to-read clinical explanations under a read-only lock to preserve data integrity.</li>
+        <li><strong>Profile Smart-Sync Updates:</strong> Parses critical laboratory findings (blood glucose, blood pressure, pulse, chronic conditions, and allergies) and automatically updates the patient's master clinical baseline.</li>
+        <li><strong>Telemetry Metrics &amp; Trends:</strong> Automatically logs extracted vital metrics into SQLite database tables on the report date, generating dynamic 90-day tracking logs.</li>
+    </ul>
+
+    <h2>3. Technological Stack &amp; Tools</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th>Technologies &amp; Tools</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Mobile Frontend</td>
+                <td>React Native, Expo SDK 54, Hermes Engine, Zustand, Lucide Icons, React Navigation</td>
+            </tr>
+            <tr>
+                <td>Backend Server</td>
+                <td>Node.js, Express, TypeScript, ts-node-dev</td>
+            </tr>
+            <tr>
+                <td>Database &amp; ORM</td>
+                <td>SQLite Database, Prisma ORM, Prisma Client</td>
+            </tr>
+            <tr>
+                <td>AI Engine</td>
+                <td>Google Generative AI SDK, Gemini 2.0 Flash, Gemini Multimodal API</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div style="page-break-after: always;"></div>
+
+    <div class="highlight-box">
+        <div class="box-title">Authentication Architecture &amp; Sandbox Pattern</div>
+        <div class="box-desc">
+            To support rapid, deterministic sandbox testing, a Single-User Sandbox Pattern was engineered. During registration or login, the database truncates all SQLite tables to provide a fresh canvas. For production environments, this will transition to dynamic UUIDv4 keys, bcrypt password salting (minimum 10 rounds), and secure signed JSON Web Tokens (JWT) passed in client Authorization headers.
+        </div>
+    </div>
+
+    <h2>4. Future Roadmap Ideas</h2>
+    <ul>
+        <li><strong>Edge-AI Local Scanning:</strong> Integrate local on-device LLMs (such as Gemini Nano) to execute visual OCR directly on-device without requiring network availability.</li>
+        <li><strong>Health Ecosystem Synchronization:</strong> Build native bridges to automatically synchronize parsed vital telemetry with Apple HealthKit and Google Fit databases.</li>
+        <li><strong>Paramedic Offline QR Access:</strong> Create locked-screen emergency QR code widgets containing encrypted key baseline metrics that first responders can scan offline instantly.</li>
+    </ul>
+
+    <div class="footer">
+        MediVault &copy; 2026. Confidential Project Overview Document.
+    </div>
+
+</body>
+</html>

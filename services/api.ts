@@ -1,5 +1,7 @@
 import Constants from 'expo-constants';
 
+import { Platform } from 'react-native';
+
 // Dynamically discover the local machine's IP address when running under Expo local dev server,
 // allowing physical test devices and emulators to communicate with our Express backend on port 5001.
 const getBaseUrl = (): string => {
@@ -8,7 +10,8 @@ const getBaseUrl = (): string => {
     const ip = hostUri.split(':')[0];
     return `http://${ip}:5001`;
   }
-  return 'http://localhost:5001';
+  // Fallback: 10.0.2.2 is the host machine for Android emulators. For iOS/Web, use localhost.
+  return Platform.OS === 'android' ? 'http://10.0.2.2:5001' : 'http://localhost:5001';
 };
 
 const BASE_URL = getBaseUrl();
@@ -87,6 +90,10 @@ export const api = {
     tags?: string[];
     doctorNotes?: string;
     templateId?: string;
+    reportText?: string;
+    imageBase64?: string;
+    customFileUri?: string;
+    files?: { base64: string; mimeType: string; }[];
   }) => {
     return request<any>('/api/records', {
       method: 'POST',
@@ -104,6 +111,12 @@ export const api = {
   deleteRecord: async (id: string) => {
     return request<{ success: boolean; message: string }>(`/api/records/${id}`, {
       method: 'DELETE',
+    });
+  },
+
+  confirmRecord: async (id: string) => {
+    return request<{ success: boolean; message: string }>(`/api/records/${id}/confirm`, {
+      method: 'POST',
     });
   },
 

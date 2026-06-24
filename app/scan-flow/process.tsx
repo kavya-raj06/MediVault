@@ -1,13 +1,25 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { FileText } from 'lucide-react-native';
+<<<<<<< HEAD
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import * as FileSystem from 'expo-file-system/legacy';
+=======
 import React, { useEffect, useRef } from 'react';
 import { Alert, Animated, StyleSheet, Text, View } from 'react-native';
 import { Colors, Typography } from '../../constants/theme';
+>>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
 import { api } from '../../services/api';
 
 export default function ProcessScreen() {
   const router = useRouter();
-  const { name, template } = useLocalSearchParams<{ name: string; template: string }>();
+  const { name, template, reportText, capturedImageBase64, capturedImageUri, capturedFilesJson } = useLocalSearchParams<{ 
+    name: string; 
+    template: string; 
+    reportText: string;
+    capturedImageBase64?: string;
+    capturedImageUri?: string;
+    capturedFilesJson?: string;
+  }>();
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
@@ -48,14 +60,37 @@ export default function ProcessScreen() {
 
     const processScannedReport = async () => {
       try {
-        console.log(`[ProcessScreen] Sending report "${name}" (template: ${template}) to backend AI engine...`);
+        let filesData: { base64: string; mimeType: string; }[] | undefined;
+        
+        if (capturedFilesJson) {
+          const files = JSON.parse(capturedFilesJson);
+          if (files && files.length > 0) {
+            filesData = [];
+            for (const file of files) {
+              const base64 = await FileSystem.readAsStringAsync(file.uri, { encoding: 'base64' });
+              filesData.push({
+                base64,
+                mimeType: file.mimeType
+              });
+            }
+          }
+        }
+
+        console.log(`[ProcessScreen] Sending report "${name}" with captured image base64 data to backend AI engine...`);
         
         const mockText = getMockReportText(template as string, name as string);
 
         const newRecord = await api.createRecord({
           reportName: name || 'Scanned Medical Report',
           templateId: template || 'cbc',
+<<<<<<< HEAD
+          reportText: reportText || '',
+          imageBase64: capturedImageBase64 || '',
+          customFileUri: capturedImageUri || '',
+          files: filesData,
+=======
           reportText: mockText,
+>>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
         });
 
         console.log('[ProcessScreen] AI processing complete. Navigating to results page.');

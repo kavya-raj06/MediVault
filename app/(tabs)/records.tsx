@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import { Colors, Typography } from '../../constants/theme';
+import { Colors, Typography, useColors } from '../../constants/theme';
 import { useStore } from '../../store/useStore';
 import { Input } from '../../components/Input';
 import { Badge } from '../../components/Badge';
@@ -10,6 +10,7 @@ import { RecordType } from '../../types';
 
 export default function RecordsScreen() {
   const { records } = useStore();
+  const colors = useColors();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const router = useRouter();
@@ -18,21 +19,21 @@ export default function RecordsScreen() {
 
   const getRecordIcon = (type: RecordType) => {
     switch (type) {
-      case 'Lab Result': return <Activity size={20} color={Colors.primary} />;
+      case 'Lab Result': return <Activity size={20} color={colors.primary} />;
       case 'Imaging & Scans': return <ImageIcon size={20} color={'#2196F3'} />;
       case 'Medical History': return <Activity size={20} color={'#22A06B'} />;
       case 'Documents': return <File size={20} color={'#F59E0B'} />;
-      default: return <FileText size={20} color={Colors.textSecondary} />;
+      default: return <FileText size={20} color={colors.textSecondary} />;
     }
   };
 
   const getAccentColor = (type: RecordType) => {
     switch (type) {
-      case 'Lab Result': return Colors.primary;
+      case 'Lab Result': return colors.primary;
       case 'Imaging & Scans': return '#2196F3';
       case 'Medical History': return '#22A06B';
       case 'Documents': return '#F59E0B';
-      default: return Colors.primary;
+      default: return colors.primary;
     }
   };
 
@@ -44,19 +45,19 @@ export default function RecordsScreen() {
 
   const renderRecordCard = ({ item }: { item: any }) => (
     <TouchableOpacity 
-      style={styles.recordCard}
+      style={[styles.recordCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
       onPress={() => router.push(`/record/${item.id}`)}
       activeOpacity={0.7}
     >
       <View style={[styles.cardAccent, { backgroundColor: getAccentColor(item.reportType) }]} />
       <View style={styles.cardContent}>
         <View style={styles.cardHeader}>
-          <View style={styles.iconCircle}>
+          <View style={[styles.iconCircle, { backgroundColor: colors.primaryPale }]}>
             {getRecordIcon(item.reportType)}
           </View>
           <View style={styles.headerText}>
-            <Text style={styles.reportName} numberOfLines={1}>{item.reportName}</Text>
-            <Text style={styles.dateText}>{item.scanDate}</Text>
+            <Text style={[styles.reportName, { color: colors.textPrimary }]} numberOfLines={1}>{item.reportName}</Text>
+            <Text style={[styles.dateText, { color: colors.textSecondary }]}>{item.scanDate}</Text>
           </View>
         </View>
         <View style={styles.tagsRow}>
@@ -71,8 +72,8 @@ export default function RecordsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.primaryPale }]}>
+      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
         <Input 
           placeholder="Search records..." 
           value={searchQuery}
@@ -87,10 +88,14 @@ export default function RecordsScreen() {
           keyExtractor={(item) => item}
           renderItem={({ item }) => (
             <TouchableOpacity 
-              style={[styles.categoryTab, activeCategory === item && styles.categoryTabActive]}
+              style={[styles.categoryTab, activeCategory === item && { borderBottomColor: colors.primary }]}
               onPress={() => setActiveCategory(item)}
             >
-              <Text style={[styles.categoryText, activeCategory === item && styles.categoryTextActive]}>
+              <Text style={[
+                styles.categoryText, 
+                { color: activeCategory === item ? colors.textPrimary : colors.textSecondary },
+                activeCategory === item && { fontFamily: 'DMSans_700Bold' }
+              ]}>
                 {item}
               </Text>
             </TouchableOpacity>
@@ -107,8 +112,8 @@ export default function RecordsScreen() {
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Text style={styles.emptyTitle}>No records yet</Text>
-            <Text style={styles.emptySubtitle}>Tap the scan button to add your first report</Text>
+            <Text style={[styles.emptyTitle, { color: colors.textPrimary }]}>No records yet</Text>
+            <Text style={[styles.emptySubtitle, { color: colors.textSecondary }]}>Tap the scan button to add your first report</Text>
           </View>
         }
       />

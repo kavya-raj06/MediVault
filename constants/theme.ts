@@ -1,4 +1,6 @@
-export const Colors = {
+import { useStore } from '../store/useStore';
+
+export const LightColors = {
   primary: '#E42278',
   primarySoft: '#ED7BAB',
   primaryMuted: '#F5D3DD',
@@ -16,13 +18,42 @@ export const Colors = {
   info: '#2196F3',
 };
 
+export const DarkColors = {
+  primary: '#DFD0B8',
+  primarySoft: '#948979',
+  primaryMuted: '#161B2C',
+  primaryPale: '#111625',
+  dark: '#111625',
+  surface: '#1C2237',
+  border: '#161B2C',
+  textPrimary: '#FDF1F5',
+  textSecondary: '#FDF1F5',
+  textOnPrimary: '#111625',
+  textDisabled: '#555B66',
+  success: '#22A06B',
+  warning: '#F59E0B',
+  error: '#E53935',
+  info: '#2196F3',
+};
+
+// Static default fallback for backward compatibility
+export const Colors = LightColors;
+
+export const useColors = () => {
+  try {
+    const theme = useStore((state) => state.theme);
+    return theme === 'dark' ? DarkColors : LightColors;
+  } catch (e) {
+    return LightColors;
+  }
+};
+
 // Typography configuration using DM Sans
-// We will load the fonts in the root layout
 export const Typography = {
   h1: {
     fontFamily: 'DMSans_700Bold',
     fontSize: 28,
-    lineHeight: 42, // 1.5x
+    lineHeight: 42,
   },
   h2: {
     fontFamily: 'DMSans_600SemiBold',
@@ -58,16 +89,16 @@ export const Typography = {
 
 export const Shadows = {
   card: {
-    shadowColor: '#0D111A',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
-    elevation: 2, // For Android
+    elevation: 2,
   },
   button: {
     shadowColor: '#E42278',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation: 4,
   },

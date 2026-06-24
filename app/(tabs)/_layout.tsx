@@ -1,18 +1,19 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { Colors, Shadows, Typography } from '../../constants/theme';
+import { Colors, Shadows, Typography, useColors } from '../../constants/theme';
 import { Home, FileText, Camera, Clock, User } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
+import { useStore } from '../../store/useStore';
 
 // Custom button for the central Scan tab
-const CustomScanButton = ({ children, onPress }: any) => (
+const CustomScanButton = ({ children, onPress, colors }: any) => (
   <TouchableOpacity
-    style={styles.scanButtonContainer}
+    style={[styles.scanButtonContainer, { shadowColor: colors.primary }]}
     onPress={onPress}
     activeOpacity={0.8}
   >
-    <View style={styles.scanButton}>
+    <View style={[styles.scanButton, { backgroundColor: colors.primary }]}>
       {children}
     </View>
   </TouchableOpacity>
@@ -20,21 +21,22 @@ const CustomScanButton = ({ children, onPress }: any) => (
 
 export default function TabLayout() {
   const router = useRouter();
+  const colors = useColors();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: Colors.dark,
+          backgroundColor: colors.dark,
           borderTopWidth: 0,
           elevation: 0,
           height: 80,
           paddingBottom: 20,
           paddingTop: 10,
         },
-        tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.textSecondary,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
         tabBarLabelStyle: {
           ...Typography.tiny,
           fontFamily: 'DMSans_500Medium',
@@ -60,10 +62,11 @@ export default function TabLayout() {
         name="scan"
         options={{
           title: '', // Empty label for the central button
-          tabBarIcon: () => <Camera size={28} color={Colors.surface} />,
+          tabBarIcon: () => <Camera size={28} color={colors.textOnPrimary} />,
           tabBarButton: (props) => (
             <CustomScanButton
               {...props}
+              colors={colors}
               onPress={() => {
                 // Navigate to the scan flow instead of just the tab
                 router.push('/scan-flow/capture');
@@ -95,13 +98,15 @@ const styles = StyleSheet.create({
     top: -20,
     justifyContent: 'center',
     alignItems: 'center',
-    ...Shadows.button,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 4,
   },
   scanButton: {
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },

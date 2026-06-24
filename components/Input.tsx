@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, View, Text, TextInputProps, ViewStyle } from 'react-native';
-import { Colors, Typography } from '../constants/theme';
+import { Colors, Typography, useColors } from '../constants/theme';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -9,17 +9,27 @@ interface InputProps extends TextInputProps {
 
 export const Input: React.FC<InputProps> = ({ label, containerStyle, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
+  const colors = useColors();
 
   return (
     <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, { color: colors.textSecondary }]}>{label}</Text>}
       <TextInput
         style={[
           styles.input,
-          isFocused && styles.inputFocused,
-          props.editable === false && styles.inputDisabled
+          {
+            backgroundColor: colors.primaryPale,
+            borderColor: colors.border,
+            color: colors.textPrimary,
+          },
+          isFocused && { borderColor: colors.primary },
+          props.editable === false && {
+            backgroundColor: colors.surface,
+            color: colors.textSecondary,
+            borderColor: colors.primaryMuted,
+          }
         ]}
-        placeholderTextColor={Colors.textDisabled}
+        placeholderTextColor={colors.textSecondary}
         onFocus={(e) => {
           setIsFocused(true);
           props.onFocus?.(e);
@@ -40,26 +50,14 @@ const styles = StyleSheet.create({
   },
   label: {
     ...Typography.small,
-    color: Colors.textSecondary,
     marginBottom: 6,
     marginLeft: 2,
   },
   input: {
     ...Typography.body,
-    backgroundColor: Colors.primaryPale,
     borderWidth: 1.5,
-    borderColor: Colors.border,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: Colors.textPrimary,
-  },
-  inputFocused: {
-    borderColor: Colors.primary,
-  },
-  inputDisabled: {
-    backgroundColor: Colors.surface,
-    color: Colors.textSecondary,
-    borderColor: Colors.primaryMuted,
   },
 });

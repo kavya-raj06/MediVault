@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
-import { Colors, Shadows, Typography } from '../constants/theme';
+import { Colors, Shadows, Typography, useColors } from '../constants/theme';
 
 interface ButtonProps {
   title: string;
@@ -21,33 +21,35 @@ export const Button: React.FC<ButtonProps> = ({
   textStyle,
   icon
 }) => {
+  const colors = useColors();
+
   const getContainerStyle = () => {
     switch (variant) {
       case 'primary':
-        return [styles.container, styles.primaryContainer];
+        return [styles.container, { backgroundColor: colors.primary }];
       case 'secondary':
-        return [styles.container, styles.secondaryContainer];
+        return [styles.container, { backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.primary }];
       case 'ghost':
-        return [styles.container, styles.ghostContainer];
+        return [styles.container, { backgroundColor: colors.primaryMuted }];
       case 'disabled':
-        return [styles.container, styles.disabledContainer];
+        return [styles.container, { backgroundColor: colors.primaryMuted }];
       default:
-        return [styles.container, styles.primaryContainer];
+        return [styles.container, { backgroundColor: colors.primary }];
     }
   };
 
   const getTextStyle = () => {
     switch (variant) {
       case 'primary':
-        return [styles.text, styles.primaryText];
+        return [styles.text, { color: colors.textOnPrimary }];
       case 'secondary':
-        return [styles.text, styles.secondaryText];
+        return [styles.text, { color: colors.primary }];
       case 'ghost':
-        return [styles.text, styles.ghostText];
+        return [styles.text, { color: colors.primary }];
       case 'disabled':
-        return [styles.text, styles.disabledText];
+        return [styles.text, { color: colors.textDisabled }];
       default:
-        return [styles.text, styles.primaryText];
+        return [styles.text, { color: colors.textOnPrimary }];
     }
   };
 
@@ -59,7 +61,7 @@ export const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.8}
     >
       {isLoading ? (
-        <ActivityIndicator color={variant === 'primary' ? Colors.surface : Colors.primary} />
+        <ActivityIndicator color={variant === 'primary' ? colors.textOnPrimary : colors.primary} />
       ) : (
         <>
           {icon}
@@ -83,32 +85,5 @@ const styles = StyleSheet.create({
   text: {
     ...Typography.body,
     fontFamily: 'DMSans_600SemiBold',
-  },
-  primaryContainer: {
-    backgroundColor: Colors.primary,
-    ...Shadows.button,
-  },
-  primaryText: {
-    color: Colors.textOnPrimary,
-  },
-  secondaryContainer: {
-    backgroundColor: Colors.surface,
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
-  },
-  secondaryText: {
-    color: Colors.primary,
-  },
-  ghostContainer: {
-    backgroundColor: Colors.primaryMuted,
-  },
-  ghostText: {
-    color: Colors.primary,
-  },
-  disabledContainer: {
-    backgroundColor: Colors.primaryMuted,
-  },
-  disabledText: {
-    color: Colors.textDisabled,
   },
 });

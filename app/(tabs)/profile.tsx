@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Modal, ActivityIndicator, Alert, Share, TextInput } from 'react-native';
-import { Colors, Typography, Shadows } from '../../constants/theme';
+import { Colors, Typography, Shadows, useColors } from '../../constants/theme';
 import { useStore } from '../../store/useStore';
-import { ChevronRight, Shield, Cloud, LogOut, QrCode, ShieldCheck, Plus, X, Heart, ShieldAlert, Info, Share2, Scale, Ruler } from 'lucide-react-native';
+import { ChevronRight, Shield, Cloud, LogOut, QrCode, ShieldCheck, Plus, X, Heart, ShieldAlert, Info, Share2, Scale, Ruler, Sun, Moon } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
-  const { profile, setAuthenticated } = useStore();
+  const { profile, setAuthenticated, theme, toggleTheme } = useStore();
+  const colors = useColors();
   const router = useRouter();
 
   // Modals state
@@ -91,11 +92,11 @@ Decryption Handshake QR Code enabled inside app for authorized clinical paramedi
   };
 
   const renderSettingRow = (label: string, value?: string, isDestructive = false, onPress?: () => void) => (
-    <TouchableOpacity style={styles.settingRow} onPress={onPress} disabled={!onPress}>
-      <Text style={[styles.settingLabel, isDestructive && styles.destructiveText]}>{label}</Text>
+    <TouchableOpacity style={[styles.settingRow, { borderBottomColor: colors.border }]} onPress={onPress} disabled={!onPress}>
+      <Text style={[styles.settingLabel, { color: isDestructive ? colors.error : colors.textPrimary }]}>{label}</Text>
       <View style={styles.settingRight}>
-        {value && <Text style={styles.settingValue}>{value}</Text>}
-        {onPress && <ChevronRight size={20} color={isDestructive ? Colors.error : Colors.textSecondary} />}
+        {value && <Text style={[styles.settingValue, { color: colors.textSecondary }]}>{value}</Text>}
+        {onPress && <ChevronRight size={20} color={isDestructive ? colors.error : colors.textSecondary} />}
       </View>
     </TouchableOpacity>
   );
@@ -109,22 +110,22 @@ Decryption Handshake QR Code enabled inside app for authorized clinical paramedi
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.primaryPale }]}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
         
         {/* Top Section */}
         <View style={styles.topSection}>
-          <View style={styles.avatarCircle}>
-            <Text style={styles.avatarText}>{profile?.name?.[0] || 'U'}</Text>
+          <View style={[styles.avatarCircle, { backgroundColor: colors.primary }]}>
+            <Text style={[styles.avatarText, { color: colors.textOnPrimary }]}>{profile?.name?.[0] || 'U'}</Text>
           </View>
-          <Text style={styles.userName}>{profile?.name || 'User Name'}</Text>
-          <Text style={styles.userEmail}>{profile?.email || 'secured@medivault.com'}</Text>
+          <Text style={[styles.userName, { color: colors.textPrimary }]}>{profile?.name || 'User Name'}</Text>
+          <Text style={[styles.userEmail, { color: colors.textSecondary }]}>{profile?.email || 'secured@medivault.com'}</Text>
         </View>
         
         {/* Emergency Access Card */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>EMERGENCY ACCESS</Text>
-          <View style={styles.emergencyCard}>
+          <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>EMERGENCY ACCESS</Text>
+          <View style={[styles.emergencyCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
             <TouchableOpacity 
               activeOpacity={0.8}
               onPress={() => setIsEmergencyModalVisible(true)}
@@ -132,24 +133,24 @@ Decryption Handshake QR Code enabled inside app for authorized clinical paramedi
             >
               <View style={styles.emergencyHeader}>
                 <View>
-                  <Text style={styles.emergencyTitle}>Emergency Card</Text>
-                  <Text style={styles.emergencySubtitle}>
+                  <Text style={[styles.emergencyTitle, { color: colors.textPrimary }]}>Emergency Card</Text>
+                  <Text style={[styles.emergencySubtitle, { color: colors.textSecondary }]}>
                     {formatBloodType(profile?.bloodType) || '--'} • {profile?.allergies?.length || 0} Allergies
                   </Text>
                 </View>
-                <QrCode size={32} color={Colors.primary} />
+                <QrCode size={32} color={colors.primary} />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.shareQRButton} onPress={handleNativeShare} activeOpacity={0.7}>
-              <Text style={styles.shareQRText}>Share QR / PDF</Text>
+            <TouchableOpacity style={[styles.shareQRButton, { borderTopColor: colors.border }]} onPress={handleNativeShare} activeOpacity={0.7}>
+              <Text style={[styles.shareQRText, { color: Colors.primary }]}>Share QR / PDF</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Medical Info */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>MEDICAL INFO</Text>
-          <View style={styles.settingsGroup}>
+          <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>MEDICAL INFO</Text>
+          <View style={[styles.settingsGroup, { backgroundColor: colors.surface, borderColor: colors.border }]}>
             {renderSettingRow('Blood Type', formatBloodType(profile?.bloodType))}
             {renderSettingRow('Height & Weight', profile?.height || profile?.weight ? `${profile?.height || '--'} cm, ${profile?.weight || '--'} kg` : undefined)}
             {renderSettingRow('Known Allergies', profile?.allergies && profile.allergies.length > 0 ? profile.allergies.join(', ') : undefined, false, () => setIsAllergiesModalVisible(true))}
@@ -160,34 +161,49 @@ Decryption Handshake QR Code enabled inside app for authorized clinical paramedi
 
         {/* Cloud & Security */}
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>CLOUD & SECURITY</Text>
-          <View style={styles.settingsGroup}>
-            <TouchableOpacity style={styles.settingRow}>
+          <Text style={[styles.sectionHeader, { color: colors.textSecondary }]}>CLOUD & SECURITY</Text>
+          <View style={[styles.settingsGroup, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <TouchableOpacity style={[styles.settingRow, { borderBottomColor: colors.border }]} onPress={toggleTheme} activeOpacity={0.7}>
               <View style={styles.settingRowLeft}>
-                <Cloud size={20} color={Colors.textPrimary} style={{ marginRight: 12 }} />
-                <Text style={styles.settingLabel}>Cloud Backup</Text>
+                {theme === 'dark' ? (
+                  <Moon size={20} color={colors.textPrimary} style={{ marginRight: 12 }} />
+                ) : (
+                  <Sun size={20} color={colors.textPrimary} style={{ marginRight: 12 }} />
+                )}
+                <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>Dark Mode</Text>
+              </View>
+              <View style={styles.settingRight}>
+                <Text style={[styles.settingValue, { color: colors.textSecondary }]}>{theme === 'dark' ? 'On' : 'Off'}</Text>
+                <ChevronRight size={20} color={colors.textSecondary} />
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.settingRow, { borderBottomColor: colors.border }]}>
+              <View style={styles.settingRowLeft}>
+                <Cloud size={20} color={colors.textPrimary} style={{ marginRight: 12 }} />
+                <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>Cloud Backup</Text>
               </View>
               <View style={styles.settingRight}>
                 <View style={styles.syncDot} />
-                <Text style={styles.settingValue}>Synced Just now</Text>
-                <ChevronRight size={20} color={Colors.textSecondary} />
+                <Text style={[styles.settingValue, { color: colors.textSecondary }]}>Synced Just now</Text>
+                <ChevronRight size={20} color={colors.textSecondary} />
               </View>
             </TouchableOpacity>
             
             <TouchableOpacity style={styles.settingRow}>
               <View style={styles.settingRowLeft}>
-                <Shield size={20} color={Colors.textPrimary} style={{ marginRight: 12 }} />
-                <Text style={styles.settingLabel}>Change 6-digit PIN</Text>
+                <Shield size={20} color={colors.textPrimary} style={{ marginRight: 12 }} />
+                <Text style={[styles.settingLabel, { color: colors.textPrimary }]}>Change 6-digit PIN</Text>
               </View>
-              <ChevronRight size={20} color={Colors.textSecondary} />
+              <ChevronRight size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Logout */}
         <View style={[styles.section, { marginBottom: 40 }]}>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <LogOut size={20} color={Colors.error} />
+          <TouchableOpacity style={[styles.logoutButton, { borderColor: colors.border }]} onPress={handleLogout}>
+            <LogOut size={20} color={colors.error} />
             <Text style={styles.logoutText}>Sign Out</Text>
           </TouchableOpacity>
         </View>
@@ -207,7 +223,7 @@ Decryption Handshake QR Code enabled inside app for authorized clinical paramedi
             activeOpacity={1} 
             onPress={() => setIsAllergiesModalVisible(false)} 
           />
-          <View style={[styles.modalDrawer, { maxHeight: '65%' }]}>
+          <View style={[styles.modalDrawer, { maxHeight: '65%', backgroundColor: theme === 'dark' ? colors.surface : '#FDF1F5' }]}>
             <View style={styles.drawerHandle} />
             
             {/* Modal Header */}
@@ -282,7 +298,7 @@ Decryption Handshake QR Code enabled inside app for authorized clinical paramedi
             activeOpacity={1} 
             onPress={() => setIsConditionsModalVisible(false)} 
           />
-          <View style={[styles.modalDrawer, { maxHeight: '65%' }]}>
+          <View style={[styles.modalDrawer, { maxHeight: '65%', backgroundColor: theme === 'dark' ? colors.surface : '#FDF1F5' }]}>
             <View style={styles.drawerHandle} />
             
             {/* Modal Header */}
@@ -357,7 +373,7 @@ Decryption Handshake QR Code enabled inside app for authorized clinical paramedi
             activeOpacity={1} 
             onPress={() => setIsEmergencyModalVisible(false)} 
           />
-          <View style={[styles.modalDrawer, { maxHeight: '90%' }]}>
+          <View style={[styles.modalDrawer, { maxHeight: '90%', backgroundColor: theme === 'dark' ? colors.surface : '#FDF1F5' }]}>
             <View style={styles.drawerHandle} />
             
             {/* Red Pulse Beacon Header */}

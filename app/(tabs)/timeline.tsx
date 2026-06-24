@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, FlatList, TouchableOpacity } from 'react-native';
-import { Colors, Typography } from '../../constants/theme';
+import { Colors, Typography, useColors } from '../../constants/theme';
 import { useStore } from '../../store/useStore';
 import { Card } from '../../components/Card';
 import { useRouter } from 'expo-router';
 
 export default function TimelineScreen() {
   const { timeline } = useStore();
+  const colors = useColors();
   const router = useRouter();
   const [filter, setFilter] = useState('All');
   const filters = ['All', 'Lab Result', 'Imaging & Scans', 'Condition'];
@@ -17,11 +18,11 @@ export default function TimelineScreen() {
 
   const getAccentColor = (type: string) => {
     switch (type) {
-      case 'Lab Result': return Colors.primary;
+      case 'Lab Result': return colors.primary;
       case 'Imaging & Scans': return '#2196F3';
       case 'Medical History': return '#22A06B';
       case 'Documents': return '#F59E0B';
-      default: return Colors.primary;
+      default: return colors.primary;
     }
   };
 
@@ -29,8 +30,8 @@ export default function TimelineScreen() {
     <View style={styles.eventRow}>
       {/* Timeline Line & Dot */}
       <View style={styles.timelineColumn}>
-        <View style={styles.timelineDot} />
-        {index !== filteredTimeline.length - 1 && <View style={styles.timelineLine} />}
+        <View style={[styles.timelineDot, { backgroundColor: colors.primary }]} />
+        {index !== filteredTimeline.length - 1 && <View style={[styles.timelineLine, { backgroundColor: colors.border }]} />}
       </View>
 
       {/* Event Card */}
@@ -42,9 +43,9 @@ export default function TimelineScreen() {
         >
           <View style={[styles.cardAccent, { backgroundColor: getAccentColor(item.type) }]} />
           <View style={styles.cardInner}>
-            <Text style={styles.eventDate}>{item.date}</Text>
-            <Text style={styles.eventTitle}>{item.reportName}</Text>
-            <Text style={styles.eventSnippet} numberOfLines={2}>{item.snippet}</Text>
+            <Text style={[styles.eventDate, { color: colors.textSecondary }]}>{item.date}</Text>
+            <Text style={[styles.eventTitle, { color: colors.textPrimary }]}>{item.reportName}</Text>
+            <Text style={[styles.eventSnippet, { color: colors.textSecondary }]}>{item.snippet}</Text>
           </View>
         </TouchableOpacity>
       </Card>
@@ -52,9 +53,9 @@ export default function TimelineScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Health Timeline</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.primaryPale }]}>
+      <View style={[styles.header, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>Health Timeline</Text>
         
         <FlatList 
           horizontal
@@ -63,10 +64,17 @@ export default function TimelineScreen() {
           keyExtractor={(item) => item}
           renderItem={({ item }) => (
             <TouchableOpacity 
-              style={[styles.filterPill, filter === item && styles.filterPillActive]}
+              style={[
+                styles.filterPill, 
+                { backgroundColor: colors.primaryMuted },
+                filter === item && { backgroundColor: colors.primary }
+              ]}
               onPress={() => setFilter(item)}
             >
-              <Text style={[styles.filterText, filter === item && styles.filterTextActive]}>
+              <Text style={[
+                styles.filterText, 
+                { color: filter === item ? colors.textOnPrimary : colors.primary }
+              ]}>
                 {item}
               </Text>
             </TouchableOpacity>

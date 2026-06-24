@@ -1,13 +1,19 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+<<<<<<< HEAD
+import * as DocumentPicker from 'expo-document-picker';
+=======
 import * as ImagePicker from 'expo-image-picker';
+>>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
 import { Colors, Typography } from '../../constants/theme';
 import { Button } from '../../components/Button';
 import { useRouter } from 'expo-router';
 import { X, Image as ImageIcon } from 'lucide-react-native';
 
 const TEMPLATES = [
+  { id: 'evergreen', name: 'Evergreen Wellness', emoji: '🏥' },
+  { id: 'general', name: 'General Check-up', emoji: '📋' },
   { id: 'cbc', name: 'CBC (Blood)', emoji: '🩸' },
   { id: 'sugar', name: 'Diabetes', emoji: '🍬' },
   { id: 'bp', name: 'Blood Pressure', emoji: '🩺' },
@@ -18,9 +24,9 @@ const TEMPLATES = [
 
 export default function CaptureScreen() {
   const [permission, requestPermission] = useCameraPermissions();
-  const [selectedTemplate, setSelectedTemplate] = useState('cbc');
+  const [selectedTemplate, setSelectedTemplate] = useState('evergreen');
   const router = useRouter();
-  const cameraRef = useRef(null);
+  const cameraRef = useRef<CameraView>(null);
 
   if (!permission) {
     return <View />;
@@ -36,13 +42,60 @@ export default function CaptureScreen() {
   }
 
   const handleCapture = async () => {
-    // Mock capture delay
-    setTimeout(() => {
-      router.push({
-        pathname: '/scan-flow/name',
-        params: { template: selectedTemplate }
+    if (!cameraRef.current) return;
+    try {
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.2, // Drastically compress for super fast network transfer (maintains perfect text legibility for Gemini)
+        base64: true,
       });
-    }, 500);
+      if (photo) {
+        router.push({
+          pathname: '/scan-flow/name',
+          params: { 
+            template: selectedTemplate,
+            capturedImageUri: photo.uri,
+            capturedImageBase64: photo.base64 || ''
+          }
+        });
+      }
+    } catch (error) {
+      Alert.alert('Capture Error', 'Failed to take photo. Please try again.');
+    }
+  };
+
+  const handleGallery = async () => {
+    console.log('[CaptureScreen] Gallery button pressed!');
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['image/*', 'application/pdf'],
+        multiple: true,
+        copyToCacheDirectory: true,
+      });
+
+      console.log('[CaptureScreen] DocumentPicker result:', result);
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        console.log('[CaptureScreen] Selected files:', result.assets.length);
+        const files = result.assets.map(asset => ({
+          uri: asset.uri,
+          mimeType: asset.mimeType || 'application/octet-stream',
+          name: asset.name,
+        }));
+        
+        router.push({
+          pathname: '/scan-flow/name',
+          params: {
+            template: selectedTemplate,
+            capturedFilesJson: JSON.stringify(files)
+          }
+        });
+      } else {
+        console.log('[CaptureScreen] Selection was canceled or empty.');
+      }
+    } catch (error) {
+      console.error('[CaptureScreen] DocumentPicker error:', error);
+      Alert.alert('Selection Error', 'Failed to pick documents. Check console for details.');
+    }
   };
 
   const handleGalleryPick = async () => {
@@ -108,7 +161,11 @@ export default function CaptureScreen() {
         </ScrollView>
 
         <View style={styles.controls}>
+<<<<<<< HEAD
+          <TouchableOpacity style={styles.galleryButton} onPress={handleGallery}>
+=======
           <TouchableOpacity style={styles.galleryButton} onPress={handleGalleryPick}>
+>>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
             <ImageIcon size={24} color={Colors.surface} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>

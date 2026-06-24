@@ -51,6 +51,8 @@ model MedicalRecord {
   aiSummary         String          // Locked plain English summary
   doctorNotes       String          // Editable free text
   extractedValues   String?         // Stringified JSON list of ExtractedValue objects
+  fileUri           String?         // String identifier for original scanned document
+  syncUpdates       String?         // Stringified JSON of pending profile/vital updates
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   timelineEvents    TimelineEvent[]

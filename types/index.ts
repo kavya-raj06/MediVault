@@ -18,6 +18,9 @@ export interface MedicalRecord {
   aiSummary: string; // Locked
   doctorNotes: string; // Editable
   extractedValues?: ExtractedValue[];
+  fileUri?: string | null;
+  syncUpdates?: string | null;
+  nameMismatch?: boolean;
 }
 
 export interface ExtractedValue {
@@ -66,6 +69,7 @@ export interface AppState {
   profile: UserProfile | null;
   records: MedicalRecord[];
   timeline: TimelineEvent[];
+  theme: 'light' | 'dark';
   
   // Actions
   setOffline: (status: boolean) => void;
@@ -75,4 +79,6 @@ export interface AppState {
   addRecord: (record: MedicalRecord) => void;
   updateRecord: (id: string, updates: Partial<MedicalRecord>) => void;
   addTimelineEvent: (event: TimelineEvent) => void;
+  confirmRecord: (id: string) => Promise<void>;
+  toggleTheme: () => void;
 }
