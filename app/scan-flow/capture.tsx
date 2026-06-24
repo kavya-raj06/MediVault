@@ -1,25 +1,21 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-<<<<<<< HEAD
 import * as DocumentPicker from 'expo-document-picker';
-=======
-import * as ImagePicker from 'expo-image-picker';
->>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
 import { Colors, Typography } from '../../constants/theme';
 import { Button } from '../../components/Button';
 import { useRouter } from 'expo-router';
 import { X, Image as ImageIcon } from 'lucide-react-native';
 
 const TEMPLATES = [
-  { id: 'evergreen', name: 'Evergreen Wellness', emoji: '🏥' },
-  { id: 'general', name: 'General Check-up', emoji: '📋' },
-  { id: 'cbc', name: 'CBC (Blood)', emoji: '🩸' },
-  { id: 'sugar', name: 'Diabetes', emoji: '🍬' },
-  { id: 'bp', name: 'Blood Pressure', emoji: '🩺' },
-  { id: 'thyroid', name: 'Thyroid', emoji: '🦋' },
-  { id: 'lipid', name: 'Lipids', emoji: '🫀' },
-  { id: 'xray', name: 'Chest X-Ray', emoji: '🩻' },
+  { id: 'evergreen', name: 'Evergreen Wellness' },
+  { id: 'general', name: 'General Check-up'  },
+  { id: 'cbc', name: 'CBC (Blood)'  },
+  { id: 'sugar', name: 'Diabetes'  },
+  { id: 'bp', name: 'Blood Pressure'  },
+  { id: 'thyroid', name: 'Thyroid'},
+  { id: 'lipid', name: 'Lipids'},
+  { id: 'xray', name: 'Chest X-Ray'},
 ];
 
 export default function CaptureScreen() {
@@ -98,20 +94,6 @@ export default function CaptureScreen() {
     }
   };
 
-  const handleGalleryPick = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: false,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      router.push({
-        pathname: '/scan-flow/name',
-        params: { template: selectedTemplate }
-      });
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -161,11 +143,7 @@ export default function CaptureScreen() {
         </ScrollView>
 
         <View style={styles.controls}>
-<<<<<<< HEAD
           <TouchableOpacity style={styles.galleryButton} onPress={handleGallery}>
-=======
-          <TouchableOpacity style={styles.galleryButton} onPress={handleGalleryPick}>
->>>>>>> b5434b852af30dc42cf0aa8a4a09194fc7df4555
             <ImageIcon size={24} color={Colors.surface} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
